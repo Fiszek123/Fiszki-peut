@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Losowe Pytanie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #question, #answer {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            white-space: pre-line; /* Pozwala na wyświetlanie nowych linii */
+        }
+    </style>
+</head>
+<body>
+    <h1>Losowe Pytanie</h1>
+    <button onclick="drawQuestion()">START</button>
+    <p id="question"></p>
+    <p id="answer" style="display: none;"></p>
+    <button id="showAnswer" onclick="showAnswer()" style="display: none;">Pokaż odpowiedź</button>
+    
+    <script>
+        const questions = [
+            "1. Scharakteryzować zaplecze techniczne na przykładzie pojazdów",
+            "2. Pojęcie i rodzaje modeli diagnostycznych",
+            "3. Rodzaje planów i zasady planowania eksploatacji",
+            "4. Zdefiniować charakterystyki niezawodności",
+            "5. Procesy starzenia i zużycia urządzeń",
+            "6. Procesy użytkowania urządzeń",
+            "7. Omówić mechanizm zużycia tribologicznego i charakterystykę (zużycia) Lareuza",
+            "8. Zdefiniować parametr stanu i diagnostyczny - kryteria klasyfikacji stanów zdatności, niepełnej zdatności i niezawodności urządzeń. Klasyfikacja klas stanów urządzeń.",
+            "9. Scharakteryzować model i charakterystyki miar niezawodności operatora.",
+            "10. Porównać krzywe zużycia Lorenza i intensywność uszkodzeń urządzenia",
+            "11. Sformułowanie i cechy rozwiązania liniowego problemu decyzyjnego – i ich rodzaje",
+            "12. Porównać skumulowane i jednostkowe charakterystyki niezawodności urządzenia",
+            "13. Porównać zakres i metody (modele) diagnozowania, genezowania i prognozowania stanu obiektów",
+            "14. Przedstawić pojęcie i zasady realizacji algorytmów diagnostycznych: fazy rozpoznania stanu i lokalizacji uszkodzeń"
+        ];
+
+        const answers = [
+            "1.To ogół środków niezbędnych do zapewnienia prawidłowej eksploatacji technicznej urządzeń.\n\n- stacje paliw\n- publiczne stacje obsługi\n- warsztaty wyspecjalizowane\n- zajezdnie\n- zakłady naprawy pojazdów\n- parkingi, garaże i inne miejsca przechowywania pojazdów",
+            "2.Model diagnostyczny opisuje związki między wielkościami badanymi w procesach diagnozowania.\nRodzaje modeli według przeznaczenia:\n- symptomowe - wykorzystywane bezpośrednio w procesach diagnozowania\n- analityczne - stosowane w procesach diagnostycznej analizy obiektów",
+            "3.Plany dzielą się na:\n- strategiczne(długookresowe) - przedmiotek planowania jest infratruktura, wyposażenie techniczne, określa się główne cele rozwoju, przemiany strukturalne systemu\n- taktyczne(średniookresowe) - planowany jest potencjał produkcyjny: rodzaj i wielkość produkcji, nakłady, liczba zatrudnionych\n- operacyjne(krótkookresowe) - wykorzystanie potencjału prodkcyjnego: użytkowanie i obsługiwanie, remonty, zużycie materiałowe, koszty i wyniki\nKażdy plan powinien zawierać: środki, zasoby, sposoby realizacji i sposoby kontroli.",
+            "4.Określają prawdopodobieństwo wystąpienia zdarzenia losowego jakim jest uszkodzenie obiektu\n Charakterystyki niezawodności obejmują:\n- charakterystyki skumulowane - określają całkowite prawdopodobieństwo wystąpienie lub nie uszkodzenia od chwili wytworzenia obiektu (ten śmieszny wykres z funkcją zawodności i niezawodności)\n- charakterystyki jednostkowe(właściwe) - określają prawdopodobieństwo uszkodzenia w danej chwili przypadające na jednostkę resursu (funkcja wannowa i funkcja wiodąca)",
+            "5.Pojęcie szersze niż zużycie, oznacza mierzalny, fizyczny ubytek materiałów części maszyny\n Starzenie obejmuje zużycie fizyczne i moralne:\n- fizyczne: zmiana masy, kształtów, właściwości, określane jako zużycie, głównie skutek tarcia oraz zmianę właściwości wynikających z oddziaływania czynników środowiska\n- moralne: utrata zdolności/przydatności do wykonywania funkcji\n Główne przyczyny zużycia warstwy wierzchniej:\n- tarcie statyczne i kinetyczne\n- tarcie zewnętrzne\n- tarcie wewnętrzne\n- tarcie mieszane\n Tribologiczne zużycie warstwy wierzchniej: zużycie ścierne, adhezyjne, przez utlenianie, zmęczeniowe\n Nietribologiczne: erozyjne/korozyjne, chemiczne/elektrochemiczne",
+            "6.Użytkowanie urządzenia występuje wówczas, gdy jest ono sprawne, zdatne do użytku, występuje w roli pośrednika działania\n Zasady racjonalnej eksploatacji urządzeń:\n- charakterystyka funkcjonowania maszyn\n- gotowość urządzeń od użytkowania\n- dokumentacja eksploatacyjna maszyn\n- jakość i bezpieczeństwo użytkowania maszyn",
+            "7.Tribologiczne zużycie dzieli się na:\n- ścierne\n- adhezyjne\n- utleniające\n- zmęczenie warstwy wierzchniej\n Krzywa Lorenza - najczęściej występujący, charakterystyczny przebieg zużycia, można wyróżnić trzy fazy eksploatacji (dociaranie, normalna eksploatacja, osiąganie stanu granicznego)",
+            "8.Parametr stanu i diagnostyczny są wielkościami fizycznymi o różnych jednostkach miar, a to uniemożliwia ich porównanie (trzeba narysować ten dwuelementwy wykres co ma wartość dopuszczalną i graniczną, stan sprawności, zdatności, niesprawności, niezdatności",
+            "9.Model niezawodności operatora mierzy jego bezpieczeństwo, odporność i zawodność w kontekście pracy.",
+            "10.Krzywa zużycia Lorenza pokazuje przebieg zużycia, natomiast krzywa intensywności określa częstość uszkodzeń(np. krzywa wannowa)",
+            "11.Liniowy problem decyzyjny może być rozwiązany metodami: intuicyjnymi, pragmatycznymi, normatywnymi, analitycznymi, eksperckimi",
+            "12.Charakterystyki skumulowane określają prawdopodobieństwo wystąpienia uszkodzenia od momentu wytworzenia urządzenia.\nFunkcja niezawodności - wyraża prawdopodobieństwo wystąpienia uszkodzenia w przedziale resursu\nCharakterystyki właściwe(jednostkowe) - określają prawdopodobieństwo wystąpienia uszkodzenia w danej chwili przypadające na jednostkę resursu",
+            "13.Diagnostyka to dziedzina nauki i techniki zajmująca się środkami i sposobami rozpoznawania stanów i ich zmian na podstawie charakterstycznych objawów\nModel diagnozowania obiektu (wejście, obiekt(zakłócenia), wyjście)\nGenezowanie - ustalanie przyczyny, wymaga znajomości procesów fizyko-chemicznych\nPrognozowanie - przewidywanie stanów i ich zmian. UStala termin następnego diagnozowania, określa zapas pracy",
+            "14.Algorytm diagnozowania to uporządkowany zbiór sprawdzen diagnostycznych który wyróżnia dwie fazy: kontroli stanu i lokalizacji uszkodzeń\nRodzaje alkorytmów:\n- stały\n- sekwencyjny\n- zmienny"
+        ];
+
+        let currentIndex = -1;
+
+        function drawQuestion() {
+            currentIndex = Math.floor(Math.random() * questions.length);
+            document.getElementById("question").innerText = questions[currentIndex];
+            document.getElementById("answer").style.display = "none";
+            document.getElementById("showAnswer").style.display = "inline-block";
+        }
+
+const images = [
+    "obrazeczki/avatar flower.png",
+    "obrazeczki/avatar flower.png",
+    "obrazeczki/avatar flower.png"
+];
+
+        function showAnswer() {
+if (currentIndex !== -1) {
+        let answerElement = document.getElementById("answer");
+        answerElement.innerHTML = answers[currentIndex].replace(/\n/g, "<br>");
+        answerElement.style.display = "block";
+
+        // Usunięcie poprzedniego obrazka, jeśli istnieje
+        let existingImage = document.getElementById("answerImage");
+        if (existingImage) {
+            existingImage.remove();
+        }
+
+        // Jeśli dla danej odpowiedzi istnieje obrazek, dodaj go pod tekstem
+        if (images[currentIndex]) {
+            let img = document.createElement("img");
+            img.src = images[currentIndex];
+            img.alt = "Obrazek do odpowiedzi";
+            img.width = 300;
+            img.id = "answerImage"; // Nadajemy ID, aby móc go później usunąć
+
+            // Dodanie obrazka jako osobnego elementu pod tekstem
+            answerElement.appendChild(document.createElement("br"));
+            answerElement.appendChild(img);
+        }
+    }
+}
+    </script>
+</body>
+</html>
